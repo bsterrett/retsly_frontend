@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Retsly App</title>
+</head>
+<body>
+  <h1>Restly App</h1>
+  <p>This is the best app.</p>
+  <% if @backend_response %>
+    <br>
+    <h2>Response from Cha's endpoint:</h2>
+    <p><%= @backend_response %></p>
+  <% end %>
+</body>
+</html>
