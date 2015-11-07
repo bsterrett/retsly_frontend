@@ -7,6 +7,13 @@ function initMap() {
   });
 }
 
+function updateMap(lat, lng) {
+  map.setCenter({
+    'lat': parseFloat(lat),
+    'lng': parseFloat(lng)
+  });
+}
+
 /* SINATRA BINDING STUFF HERE */
 function getCaltrainStations(params) {
   $.ajax({
@@ -14,6 +21,7 @@ function getCaltrainStations(params) {
     method: 'GET',
     success: function(data) {
       updateCalTrainStations(data['heroku_response']);
+      updateMap(data['heroku_response']['stop_lat'], data['heroku_response']['stop_lon']);
     },
     error: function() {
       alert('failure!');
