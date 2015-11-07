@@ -1,27 +1,25 @@
-require 'pry'
 require 'sinatra'
 require 'rest-client'
 
 configure do
-  # enable :static
-  # set :public_folder, File.dirname(__FILE__) + '/public'
-  set(:css_dir) { 'public/css' }
 end
 
 get '/' do
-  'Hello World'
+  erb File.read('views/retsly_frontend.html.erb')
 end
 
-get '/retsly_endpoint' do
+get '/services/get_caltrain_stations/:id' do
+  content_type :json
   begin
-    @backend_response = RestClient::Request.execute(method: :get,
+    @heroku_response = RestClient::Request.execute(method: :get,
                                                     url: 'http://tejava-python.herokuapp.com/helloworld',
                                                     timeout: 10)
   rescue RestClient::Exceptions::OpenTimeout
     puts '!!!! HEROKU TIMEOUT !!!!'
+    return {:error => "Heroku Timeout"}.to_json
   end
 
-  erb File.read('views/retsly_frontend.html.erb')
+  {:heroku_response => @heroku_response}.to_json
 end
 
 get '/javascripts/:file' do

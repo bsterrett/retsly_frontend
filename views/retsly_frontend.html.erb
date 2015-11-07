@@ -3,16 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <title>Retsly App</title>
-  <link rel="stylesheet" href="css/bad.css" type="text/css">
-  <script src="javascripts/bad.js" type="text/javascript" charset="utf-8"></script>
+  <link rel="stylesheet" href="css/base.css" type="text/css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="javascripts/base.js" type="text/javascript" charset="utf-8"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnBo_OFStBS2gl_-vUxnvcynrGds9rEJQ&callback=initMap"></script>
 </head>
 <body>
   <h1>Restly App</h1>
   <p>This is the best app.</p>
+  <br><hr><br>
+  <input type="text" value="Bootylicious" id="caltrain_station_id">
+  <button id="get_caltrain_stations">Submit</button>
+  <p id="caltrain_info">Bootylicious</p>
   <% if @backend_response %>
-    <br>
+    <br><hr><br>
     <h2>Response from Cha's endpoint:</h2>
     <p><%= @backend_response %></p>
   <% end %>
+  <br><hr><br>
+  <div id="map-container">
+    <div id="map"></div>
+  </div>
 </body>
 </html>
