@@ -1,5 +1,5 @@
 /* GOOGLE MAPS STUFF HERE */
-var map, latest_search_location, latest_marker, geocoder;
+var map, geocoder, latest_search_location, latest_marker, latest_polygon, ring, listing_markers;
 var input = document.getElementById('address_search');
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -24,9 +24,9 @@ function initMap() {
 function onPlaceChanged() {
   var place = autocomplete.getPlace();
   if (place.geometry) {
-    map.panTo(place.geometry.location);
-    map.setZoom(15);
-    // search();
+    // map.panTo(place.geometry.location);
+    // map.setZoom(12);
+    doPolygonsAndMarkers();
   } else {
     document.getElementById('address_search').placeholder = 'Enter a city';
   }
@@ -68,6 +68,29 @@ function geocodeAddress(address) {
   });
 }
 
+function drawPolygon(ring) {
+  if( latest_polygon != undefined )
+    latest_polygon.setMap(null);
+
+  latest_polygon = new google.maps.Polygon({
+    paths: ring,
+    strokeColor: '#FF00FF',
+    strokeWeight: 2,
+    strokeOpacity: 0.8,
+    fillColor: '#FF00FF',
+    fillOpacity: '0.2'
+  });
+  latest_polygon.setMap(map);
+}
+
+function drawListingMarker(position, title) {
+  listing_markers.push(new google.maps.Marker({
+    position: position,
+    map: map,
+    title: title
+  }));
+}
+
 /* SINATRA BINDING STUFF HERE */
 function getCaltrainStations(params) {
   $.ajax({
@@ -85,19 +108,79 @@ function getCaltrainStations(params) {
   });
 }
 
+/* HEROKU BINDING STUFF HERE */
+function getPolygon(params) {
+  $.ajax({
+    url: '/services/get_polygon_for_location',
+    method: 'GET',
+    success: function(data) {
+      ring = [];
+      for(i = 0; i < data['polygon'].length; i++) {
+        lat = data['polygon'][i]['latitude'];
+        lng = data['polygon'][i]['longitude'];
+        ring.push(new google.maps.LatLng(lat, lng));
+      }
+      drawPolygon(ring);
+
+      listing_markers = [];
+      for(i = 0; i < data['listings'].length; i++) {
+        lat = data['listings'][i]['coordinates'][1];
+        lng = data['listings'][i]['coordinates'][0];
+        title = data['listings'][i]['address'];
+        drawListingMarker(new google.maps.LatLng(lat, lng), title);
+      }
+    },
+    error: function() {
+      alert('failure!');
+    }
+  });
+}
+
+function doPolygonsAndMarkers() {
+  geocodeAddress($("#address_search").val());
+  getPolygon({});
+}
+
 /* BUTTON HANDLERS HERE */
 $(document).ready(function(){
-  $('#search_caltrain_stations').click(function(){
-    var params = { "id": $("#caltrain_station_id_search").val() }
-    getCaltrainStations(params);
+  $('#search_addresses').click(function(){
+    doPolygonsAndMarkers();
   });
 
-  $('#search_addresses').click(function(){
-    geocodeAddress($("#address_search").val());
-  });
+  document.getElementById('address_search').onkeypress = function(e) {
+    var event = e || window.event;
+    var charCode = event.which || event.keyCode;
+    if ( charCode == '13' ) {
+      doPolygonsAndMarkers();
+    }
+  }
 });
 
 /* FRONTEND UI CALLBACKS HERE*/
 function updateCalTrainStations(text) {
   $('#caltrain_info').text(text);
 }
+
+function resizeMap() {
+  vertical_space_for_map = $(window).height() - $('header').height() - $('footer').height();
+  horizontal_space_for_map = $(window).width() - $('header').width() - $('footer').width();
+
+  document.getElementById('map').style.height = String(vertical_space_for_map) + "px";
+  document.getElementById('map').style.width = String(horizontal_space_for_map) + "px";
+}
+
+function resizeAndRedrawMap() {
+  resizeMap();
+  google.maps.event.trigger(map, "resize");
+
+  if(latest_search_location != undefined)
+    map.setCenter(latest_search_location);
+}
+
+$(window).resize(function() {
+  resizeAndRedrawMap()
+});
+
+$(document).ready(function() {
+  resizeMap();
+});

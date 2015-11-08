@@ -19,6 +19,17 @@ get '/services/get_caltrain_stations/:id' do
   { data: parsed_response }.to_json
 end
 
+get '/services/get_polygon_for_location' do
+  content_type :json
+  target_url = 'http://tejava-python.herokuapp.com/tejava/testresults'
+  heroku_response = RestClient::Request.execute(method: :get,
+                                                url: target_url,
+                                                timeout: 10)
+
+  parsed_response = JSON.parse(heroku_response)
+  parsed_response.to_json
+end
+
 get '/javascripts/:file' do
   content_type :js
   File.read("public/javascripts/#{params[:file]}")

@@ -1,6 +1,11 @@
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
 #map-container {
-  height: 480px;
-  width: 800px;
+  height: 75%;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -12,6 +17,7 @@
   padding: 0 25px;
 }
 
-input[type=text] {
-  width: 200px;
+#address_search {
+  width: 500px;
+  background-color: #233A43;
 }
