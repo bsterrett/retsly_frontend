@@ -1,9 +1,17 @@
 #map-container {
-  height: 300px;
-  width: 450px;
+  height: 480px;
+  width: 800px;
   margin: 0 auto;
 }
 
 #map {
   height: 100%;
+}
+
+#search_terms td {
+  padding: 0 25px;
+}
+
+input[type=text] {
+  width: 200px;
 }

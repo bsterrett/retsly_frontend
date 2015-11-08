@@ -10,16 +10,13 @@ end
 
 get '/services/get_caltrain_stations/:id' do
   content_type :json
-  begin
-    target_url = "http://tejava-python.herokuapp.com/caltrain/random/#{params[:id]}"
-    @heroku_response = RestClient::Request.execute(method: :get,
-                                                   url: target_url,
-                                                   timeout: 10)
-    { :heroku_response => @heroku_response }.to_json
-  rescue RestClient::Exceptions::OpenTimeout
-    puts '!!!! HEROKU TIMEOUT !!!!'
-    { :error => 'Heroku Timeout' }.to_json
-  end
+  target_url = "http://tejava-python.herokuapp.com/caltrain/random/#{params[:id]}"
+  heroku_response = RestClient::Request.execute(method: :get,
+                                                url: target_url,
+                                                timeout: 10)
+
+  parsed_response = JSON.parse(heroku_response)
+  { data: parsed_response }.to_json
 end
 
 get '/javascripts/:file' do

@@ -6,20 +6,38 @@
   <link rel="stylesheet" href="css/base.css" type="text/css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
   <script src="javascripts/base.js" type="text/javascript" charset="utf-8"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnBo_OFStBS2gl_-vUxnvcynrGds9rEJQ&callback=initMap"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnBo_OFStBS2gl_-vUxnvcynrGds9rEJQ&libraries=places&callback=initMap"></script>
+
 </head>
 <body>
-  <h1>Restly App</h1>
-  <p>This is the best app.</p>
+  <h3>Restly App</h1>
   <br><hr><br>
-  <input type="text" value="Bootylicious" id="caltrain_station_id">
-  <button id="get_caltrain_stations">Submit</button>
-  <p id="caltrain_info">Bootylicious</p>
-  <% if @backend_response %>
-    <br><hr><br>
-    <h2>Response from Cha's endpoint:</h2>
-    <p><%= @backend_response %></p>
-  <% end %>
+  <table id="search_terms">
+    <thead>
+      <tr>
+        <td>
+          Caltrain Lookup
+        </td>
+        <td>
+          Address Lookup
+        </td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <input type="text" value="" id="caltrain_station_id_search">
+          <button id="search_caltrain_stations">Submit</button>
+          <p id="caltrain_info">&nbsp;</p>
+        </td>
+        <td>
+          <input id="address_search" class="controls" type="text" placeholder="Search Box">
+          <button id="search_addresses">Submit</button>
+          <p id="address_info">&nbsp;</p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
   <br><hr><br>
   <div id="map-container">
     <div id="map"></div>
